@@ -7,7 +7,6 @@ data = pd.read_csv("loomadevices.csv")  # columns: serial, model, build
 
 # Output folder
 os.makedirs("qr_codes", exist_ok=True)
-
 for index, row in data.iterrows():
     serial = row['serial']
     model = row['model']
