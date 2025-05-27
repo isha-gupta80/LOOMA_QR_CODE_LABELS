@@ -11,7 +11,7 @@ for index, row in data.iterrows():
     serial = row['serial']
     model = row['model']
     build = row['build']
-    url = f"https://yourserver.com/scan?serial={serial}&model={model}&build={build}"
+    url = f"http://127.0.0.1:5000serial={serial}&model={model}&build={build}"
 
     qr = qrcode.make(url)
     qr.save(f"qr_codes/{serial}.png")
