@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Looma Device Scan</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <form id="deviceForm" action="/submit" method="POST">
+        <!-- Hidden fields -->
+        <input type="hidden" name="serial" value="{{ serial }}">
+        <input type="hidden" name="model" value="{{ model }}">
+        <input type="hidden" name="build" value="{{ build }}">
+        <input type="hidden" id="latitude" name="latitude">
+        <input type="hidden" id="longitude" name="longitude">
+        
+        <!-- Technician fills out -->
+        <label>School Name:
+            <input type="text" name="school" pattern="[A-Za-z\s]+" title="Only letters and spaces allowed" required>
+        </label><br>
+
+        <label>Technician Name:
+            <input type="text" name="technician" pattern="[A-Za-z\s]+" title="Only letters and spaces allowed" required>
+        </label><br>
+
+        <label>Software Version:
+            <input type="text" name="software_version" required>
+        </label><br>
+
+        <label>Condition:
+            <input type="text" name="condition" required>
+        </label><br>
+
+        <button type="submit">Submit</button>
+    </form>
+
+    <script>
+    window.onload = function () {
+        if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(
+                function (position) {
+                    document.getElementById("latitude").value = position.coords.latitude;
+                    document.getElementById("longitude").value = position.coords.longitude;
+                },
+                function (error) {
+                    console.log("Location access denied or unavailable.");
+                }
+            );
+        } else {
+            console.log("Geolocation is not supported by this browser.");
+        }
+    };
+
+    document.getElementById("deviceForm").addEventListener("submit", function (event) {
+        event.preventDefault(); // Prevent normal form submission
+
+        const namePattern = /^[A-Za-z\s]+$/;
+        const school = document.querySelector("[name='school']").value.trim();
+        const tech = document.querySelector("[name='technician']").value.trim();
+
+        if (!namePattern.test(school)) {
+            alert("School name should contain only letters and spaces.");
+            return;
+        }
+
+        if (!namePattern.test(tech)) {
+            alert("Technician name should contain only letters and spaces.");
+            return;
+        }
+
+        const formData = new FormData(this);
+
+        fetch(this.action, {
+            method: this.method,
+            body: formData
+        })
+        .then(response => {
+            if (response.ok) {
+                alert("Form submitted successfully!");
+                this.reset(); // Optional: clear the form
+            } else {
+                alert("Failed to submit the form. Please try again.");
+            }
+        })
+        .catch(error => {
+            alert("An error occurred. Please check your connection and try again.");
+            console.error(error);
+        });
+    });
+</script>
+
+
+</body>
+</html>
