@@ -7,8 +7,10 @@ from urllib.parse import urlencode
 # loading csv
 data = pd.read_csv("loomadevices.csv")  # columns: serial, model, build
 
-# Prepare logo 
-logo = Image.open("Looma-2019.png").convert("RGBA").resize((100, 100))  # resize logo
+# Prepare vertical logo
+logo = Image.open("Looma-2019.png").convert("RGBA")
+logo = logo.resize((100, 100))  # resize as needed
+logo = logo.rotate(270, expand=True)
 
 #  Create output directory 
 output_dir = "qr_labels"
