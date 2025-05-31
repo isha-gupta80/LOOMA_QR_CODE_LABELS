@@ -4,27 +4,27 @@ from PIL import Image, ImageDraw, ImageFont
 import os
 from urllib.parse import urlencode
 
-# loading csv
+# Load CSV
 data = pd.read_csv("loomadevices.csv")  # columns: serial, model, build
 
-# Prepare vertical logo
+# Load and rotate logo
 logo = Image.open("Looma-2019.png").convert("RGBA")
-logo = logo.resize((100, 100))  # resize as needed
-logo = logo.rotate(270, expand=True)
+logo = logo.resize((80, 80))  # Resize as needed
+logo = logo.rotate(270, expand=True)  # Rotate to vertical
 
-#  Create output directory 
+# Create output directory
 output_dir = "qr_labels"
 os.makedirs(output_dir, exist_ok=True)
 
-#  Set fonts 
+# Set fonts
 try:
-    font_bold = ImageFont.truetype("arialbd.ttf", 20)
-    font_regular = ImageFont.truetype("arial.ttf", 18)
+    font_bold = ImageFont.truetype("arialbd.ttf", 22)
+    font_regular = ImageFont.truetype("arial.ttf", 20)
 except:
     font_bold = ImageFont.load_default()
     font_regular = ImageFont.load_default()
 
-#  Generate each label
+# Generate each label
 BASE_URL = "http://127.0.0.1:5000/"
 
 for _, row in data.iterrows():
@@ -41,21 +41,39 @@ for _, row in data.iterrows():
     qr = qr.resize((100, 100))
 
     # Create label canvas
-    label = Image.new("RGB", (600, 120), "white")
+    label_width = 580
+    label_height = 120
+    label = Image.new("RGB", (label_width, label_height), "white")
     draw = ImageDraw.Draw(label)
 
-    # Paste QR and logo
+    # Draw darker orange vertical strip with margin
+    margin = 10
+    orange_strip_width = 45
+    orange_strip_height = label_height - 2 * margin
+    dark_orange = (128, 40, 0)
+
+    orange_strip = Image.new("RGB", (orange_strip_width, orange_strip_height), dark_orange)
+
+    orange_x = label_width - orange_strip_width - margin
+    orange_y = margin
+    label.paste(orange_strip, (orange_x, orange_y))
+
+    # Paste QR code
     label.paste(qr, (10, 10))
-    label.paste(logo, (490, 10), logo)
 
-    # Add text info
-    draw.text((130, 20), "Looma Education", font=font_bold, fill="black")
-    draw.text((130, 50), "+977 9812345678", font=font_regular, fill="black")
-    draw.text((130, 80), f"serial number: {serial}", font=font_bold, fill="black")
+    # Paste vertical logo centered in orange strip
+    logo_x = orange_x + (orange_strip_width - logo.width) // 2
+    logo_y = orange_y + (orange_strip_height - logo.height) // 2
+    label.paste(logo, (logo_x, logo_y), logo)
 
-    # Save label
+    # Add text
+    text_x = 130
+    draw.text((text_x, 20), "        Looma Education", font=font_bold, fill="black")
+    draw.text((text_x, 50), "        +977 9812345678", font=font_regular, fill="black")
+    draw.text((text_x, 80), f"        serial number: {serial}", font=font_bold, fill="black")
+
+    # Save image
     output_path = os.path.join(output_dir, f"{serial}.png")
     label.save(output_path)
 
-    print(f" QR label created for {serial} and {output_path}")
- 
+    print(f"QR label created for {serial} at {output_path}")
