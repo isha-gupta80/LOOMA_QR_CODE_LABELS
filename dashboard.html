@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Looma Dashboard</title>
+</head>
+<body>
+    <h1>Welcome to the Looma Dashboard</h1>
+    <p><a href="{{ url_for('logout') }}">Logout</a></p>
+    <h2>Scanned Looma Devices</h2>
+    <ul>
+        {% for serial in serials %}
+            <li><a href="{{ url_for('device', serial=serial) }}">{{ serial }}</a></li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

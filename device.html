@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Device Records: {{ serial }}</title>
+</head>
+<body>
+    <h1>Records for Looma Device: {{ serial }}</h1>
+    <p><a href="{{ url_for('dashboard') }}">Back to Dashboard</a> |
+       <a href="{{ url_for('logout') }}">Logout</a></p>
+
+    {% if records %}
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Timestamp</th>
+                    <th>Model</th>
+                    <th>Build</th>
+                    <th>Username</th>
+                    <th>School</th>
+                    <th>Software Version</th>
+                    <th>Condition</th>
+                    <th>Latitude</th>
+                    <th>Longitude</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for record in records %}
+                <tr>
+                    <td>{{ record.timestamp }}</td>
+                    <td>{{ record.model }}</td>
+                    <td>{{ record.build }}</td>
+                    <td>{{ record.username }}</td>
+                    <td>{{ record.school }}</td>
+                    <td>{{ record.software_version }}</td>
+                    <td>{{ record.condition }}</td>
+                    <td>{{ record.location.latitude }}</td>
+                    <td>{{ record.location.longitude }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No records found for this device.</p>
+    {% endif %}
+</body>
+</html>
