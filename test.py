@@ -10,7 +10,7 @@ PASSWORD_HASH = os.getenv("ADMIN_PASSWORD_HASH", "").strip()
 print(f"USERNAME from .env: '{USERNAME}'")
 print(f"PASSWORD_HASH from .env: '{PASSWORD_HASH}'")
 
-test_username = "amit"
+test_username = "skip"
 test_password = "password"
 
 print("Username match:", USERNAME == test_username)
