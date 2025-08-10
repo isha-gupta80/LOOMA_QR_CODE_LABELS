@@ -74,28 +74,29 @@ def index():
             latitude = request.form.get('latitude', '').strip()
             longitude = request.form.get('longitude', '').strip()
 
+            # Check CSV for device, but still log data even if not found
             device = find_device(serial)
 
-            if device:
-                document = {
-                    'timestamp': datetime.utcnow(),
-                    'serial': serial,
-                    'model': device.get('model', ''),
-                    'build': device.get('build', ''),
-                    'username': username,
-                    'school': school,
-                    'software_version': software_version,
-                    'condition': condition,
-                    'location': {
-                        'latitude': latitude,
-                        'longitude': longitude
-                    }
+            document = {
+                'timestamp': datetime.utcnow(),
+                'serial': serial,
+                'username': username,
+                'school': school,
+                'software_version': software_version,
+                'condition': condition,
+                'location': {
+                    'latitude': latitude,
+                    'longitude': longitude
                 }
-                collection.insert_one(document)
+            }
+            collection.insert_one(document)
+
+            if device:
                 success = True
                 flash("Form submitted successfully.", "success")
             else:
-                flash("Device not found.", "error")
+                flash("Device not found in CSV, but scan saved to database.", "warning")
+
         except Exception as e:
             logger.error(f"Error processing form: {e}", exc_info=True)
             flash("An error occurred while submitting the form.", "error")
@@ -107,10 +108,9 @@ def index():
     return render_template(
         'index.html',
         serial=serial or '',
-        model=device.get('model', '') if device else '',
-        build=device.get('build', '') if device else '',
         success=success
     )
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

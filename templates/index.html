@@ -10,14 +10,12 @@
         <div class="header">
             <h2>Looma Device Scan Form</h2>
             {% if serial %}<p><strong>Device Serial:</strong> {{ serial }}</p>{% endif %}
-            {% if model %}<p><strong>Model:</strong> {{ model }}</p>{% endif %}
-            {% if build %}<p><strong>Build:</strong> {{ build }}</p>{% endif %}
+            <!--Changed-->
         </div>
 
         <form id="deviceForm" action="/" method="POST">
             <input type="hidden" name="serial" value="{{ serial }}">
-            <input type="hidden" name="model" value="{{ model }}">
-            <input type="hidden" name="build" value="{{ build }}">
+            <!--Changed-->
             <input type="hidden" id="latitude" name="latitude">
             <input type="hidden" id="longitude" name="longitude">
 
